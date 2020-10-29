@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  my5gcore-ue:
+    container_name: non3gpp-ue
+    build:
+      context: ./nf_ue
+      args:
+        DEBUG_TOOLS: "false"
+    expose:
+      - "80"
+    # command: sh -c "./ue-ipsec.sh && ./ue "
+    command: sh -c " ./ipsec --ue ue --n3iwf y2 && while true; do echo 'Hit CTRL+C'; sleep 10000; done "
+    volumes:
+      - ./config/uecfg.conf:/my5gcore/config/uecfg.conf
+      - ./config/free5GC.conf:/my5gcore/config/my5Gcore.conf
+      - ./config/ue-ipsec.sh:/my5gcore/ue/ue-ipsec.sh
+      - ./config/ipsec:/my5gcore/ue/ipsec
+    environment:
+      GIN_MODE: release
+    cap_add:
+      - NET_ADMIN
+
+volumes:
+  dbdata:
